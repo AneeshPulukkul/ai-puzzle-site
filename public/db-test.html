@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Connection Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #ccc;
+        }
+        .log-entry.error {
+            border-left-color: #dc3545;
+        }
+        .log-entry.warn {
+            border-left-color: #ffc107;
+        }
+        .log-entry.info {
+            border-left-color: #17a2b8;
+        }
+        .log-entry.success {
+            border-left-color: #28a745;
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .config-display {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .config-item {
+            margin: 5px 0;
+        }
+        .config-item .key {
+            font-weight: bold;
+            display: inline-block;
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Database Connection Test</h1>
+    
+    <div class="info status">
+        <p>This page tests the connection to your Azure PostgreSQL database.</p>
+    </div>
+    
+    <div class="config-display">
+        <h2>Database Configuration</h2>
+        <div id="db-config">Loading configuration...</div>
+    </div>
+    
+    <button id="test-connection">Test Database Connection</button>
+    
+    <div id="connection-status" class="status">Click the button above to test connection.</div>
+    
+    <h2>Connection Logs</h2>
+    <div id="connection-logs"></div>
+    
+    <script>
+        // Function to test the database connection
+        async function testConnection() {
+            const logsEl = document.getElementById('connection-logs');
+            const statusEl = document.getElementById('connection-status');
+            
+            addLogEntry('Starting database connection test...', 'info');
+            
+            try {
+                statusEl.className = 'status info';
+                statusEl.textContent = 'Testing connection...';
+                
+                const response = await fetch('/api/test-connection');
+                const data = await response.json();
+                
+                if (data.success) {
+                    statusEl.className = 'status success';
+                    statusEl.textContent = '✅ Connection successful! Database is reachable.';
+                    addLogEntry(`Connection successful. Server time: ${data.serverTime}`, 'success');
+                    
+                    // Display tables if available
+                    if (data.tables && data.tables.length) {
+                        addLogEntry('Tables found in database:', 'info');
+                        data.tables.forEach(table => {
+                            addLogEntry(`- ${table}`, 'info');
+                        });
+                    }
+                } else {
+                    statusEl.className = 'status error';
+                    statusEl.textContent = '❌ Connection failed! See logs for details.';
+                    addLogEntry(`Connection failed: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                statusEl.className = 'status error';
+                statusEl.textContent = '❌ Test failed due to an error. See logs for details.';
+                addLogEntry(`Error running test: ${error.message}`, 'error');
+            }
+        }
+        
+        // Function to add a log entry
+        function addLogEntry(message, type = 'info') {
+            const logsEl = document.getElementById('connection-logs');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = message;
+            logsEl.appendChild(entry);
+        }
+        
+        // Function to get database configuration
+        async function getDbConfig() {
+            const configEl = document.getElementById('db-config');
+            
+            try {
+                const response = await fetch('/api/db-config');
+                const data = await response.json();
+                
+                configEl.innerHTML = '';
+                
+                // Display each config item
+                Object.entries(data).forEach(([key, value]) => {
+                    const item = document.createElement('div');
+                    item.className = 'config-item';
+                    
+                    const keySpan = document.createElement('span');
+                    keySpan.className = 'key';
+                    keySpan.textContent = key + ': ';
+                    
+                    const valueSpan = document.createElement('span');
+                    valueSpan.className = 'value';
+                    // Don't show password value
+                    valueSpan.textContent = key === 'password' ? '********' : value;
+                    
+                    item.appendChild(keySpan);
+                    item.appendChild(valueSpan);
+                    configEl.appendChild(item);
+                });
+            } catch (error) {
+                configEl.innerHTML = `<div class="error">Error loading configuration: ${error.message}</div>`;
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set up button click event
+            document.getElementById('test-connection').addEventListener('click', testConnection);
+            
+            // Get database configuration
+            getDbConfig();
+        });
+    </script>
+</body>
+</html>

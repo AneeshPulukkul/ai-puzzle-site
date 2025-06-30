@@ -1,0 +1,274 @@
+#root {
+  width: 100%;
+  margin: 0 auto;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+  min-height: 100vh;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-header {
+  background-color: #1a1a1a;
+  padding: 1.5rem;
+  border-bottom: 1px solid #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  background: linear-gradient(90deg, #646cff, #61dafb);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.app-header nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.app-header button {
+  background-color: #333;
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.app-header button.active {
+  background-color: #646cff;
+}
+
+.app-header button:hover:not(.active) {
+  background-color: #444;
+}
+
+.app-header button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.ai-showcase h2,
+.ai-puzzle h2 {
+  margin-top: 0;
+  color: #646cff;
+}
+
+.use-case-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.use-case-card {
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  padding: 1.5rem;
+  border: 1px solid #333;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.use-case-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.use-case-card h3 {
+  margin-top: 0;
+  color: #61dafb;
+}
+
+.use-case-card .difficulty {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  margin: 0.5rem 0;
+  font-weight: bold;
+}
+
+.use-case-card .difficulty.easy {
+  background-color: #4caf50;
+  color: white;
+}
+
+.use-case-card .difficulty.medium {
+  background-color: #ff9800;
+  color: white;
+}
+
+.use-case-card .difficulty.hard {
+  background-color: #f44336;
+  color: white;
+}
+
+.use-case-card button {
+  background-color: #646cff;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.3s;
+}
+
+.use-case-card button:hover {
+  background-color: #535bf2;
+}
+
+.puzzle-workspace {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.tools-palette,
+.solution-workspace {
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  padding: 1.5rem;
+  border: 1px solid #333;
+}
+
+.game-controls {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.game-controls button {
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.game-controls button:hover {
+  background-color: #444;
+}
+
+.game-controls button:first-child {
+  background-color: #4caf50;
+}
+
+.game-controls button:first-child:hover {
+  background-color: #3d8b40;
+}
+
+.game-controls button:last-child {
+  background-color: #f44336;
+}
+
+.game-controls button:last-child:hover {
+  background-color: #d32f2f;
+}
+
+.app-footer {
+  background-color: #1a1a1a;
+  padding: 1rem;
+  text-align: center;
+  border-top: 1px solid #333;
+}
+
+/* Loading and error states */
+.loading-state,
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+  padding: 2rem;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  margin: 2rem auto;
+  border: 5px solid rgba(100, 108, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #646cff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error-state {
+  color: #f44336;
+}
+
+.error-state h2 {
+  color: #f44336;
+}
+
+/* Warning banner for mock data fallback */
+.warning-banner {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+  border-radius: 4px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.warning-banner p {
+  margin: 0.5rem 0;
+}
+
+.warning-banner strong {
+  color: #856404;
+}
+
+@media (max-width: 768px) {
+  .puzzle-workspace {
+    grid-template-columns: 1fr;
+  }
+  
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .app-header nav {
+    margin-top: 1rem;
+    width: 100%;
+  }
+  
+  .app-header button {
+    flex: 1;
+    text-align: center;
+  }
+}

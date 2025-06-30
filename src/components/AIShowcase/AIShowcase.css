@@ -1,0 +1,291 @@
+.ai-showcase {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hero-section {
+  text-align: center;
+  padding: 3rem 1rem 4rem;
+  background: linear-gradient(to bottom, rgba(100, 108, 255, 0.05), rgba(97, 218, 251, 0.05));
+  border-radius: 12px;
+  margin-bottom: 3rem;
+}
+
+.hero-section h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(90deg, #646cff, #61dafb);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-section p {
+  font-size: 1.2rem;
+  color: #ddd;
+  max-width: 800px;
+  margin: 0 auto 2rem;
+}
+
+.search-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.search-input {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  border-radius: 50px;
+  border: none;
+  background-color: #333;
+  color: white;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #646cff;
+}
+
+.category-filter {
+  margin-bottom: 3rem;
+}
+
+.category-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.category-buttons button {
+  background-color: #333;
+  border: none;
+  color: white;
+  padding: 0.5rem 1.25rem;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.category-buttons button:hover {
+  background-color: #444;
+}
+
+.category-buttons button.active {
+  background-color: #646cff;
+}
+
+.tools-grid h2,
+.use-cases h2 {
+  margin-bottom: 1.5rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.tool-card {
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  padding: 1.5rem;
+  border: 1px solid #333;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.tool-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.tool-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.tool-header h3 {
+  margin: 0;
+  color: #61dafb;
+}
+
+.category-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.category-badge.language {
+  background-color: #ff9800;
+  color: black;
+}
+
+.category-badge.framework {
+  background-color: #2196f3;
+  color: white;
+}
+
+.category-badge.tool {
+  background-color: #4caf50;
+  color: white;
+}
+
+.category-badge.model {
+  background-color: #9c27b0;
+  color: white;
+}
+
+.tool-description {
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
+}
+
+.tool-capabilities h4 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #ddd;
+}
+
+.tool-capabilities ul {
+  padding-left: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.tool-capabilities li {
+  margin-bottom: 0.25rem;
+  color: #bbb;
+}
+
+.tool-complexity {
+  margin-top: 1rem;
+}
+
+.complexity-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.complexity-badge.beginner {
+  background-color: #4caf50;
+  color: white;
+}
+
+.complexity-badge.intermediate {
+  background-color: #ff9800;
+  color: white;
+}
+
+.complexity-badge.advanced {
+  background-color: #f44336;
+  color: white;
+}
+
+.use-case-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.use-case-card {
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  padding: 1.5rem;
+  border: 1px solid #333;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.use-case-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.use-case-card h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #61dafb;
+}
+
+.use-case-card p {
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
+}
+
+.difficulty-label {
+  margin-bottom: 1rem;
+}
+
+.difficulty {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.difficulty.easy {
+  background-color: #4caf50;
+  color: white;
+}
+
+.difficulty.medium {
+  background-color: #ff9800;
+  color: white;
+}
+
+.difficulty.hard {
+  background-color: #f44336;
+  color: white;
+}
+
+.start-button {
+  background-color: #646cff;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  align-self: flex-start;
+}
+
+.start-button:hover {
+  background-color: #535bf2;
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 2rem 1rem;
+  }
+  
+  .hero-section h1 {
+    font-size: 2rem;
+  }
+  
+  .hero-section p {
+    font-size: 1rem;
+  }
+  
+  .grid, .use-case-grid {
+    grid-template-columns: 1fr;
+  }
+}
