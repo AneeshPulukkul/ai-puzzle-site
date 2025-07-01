@@ -224,3 +224,11 @@ The application uses the following database tables:
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details
+
+## Documentation
+
+- [Client-Server Architecture](docs/client-server-architecture.md)
+- [Azure PostgreSQL Setup](docs/azure-postgresql-setup.md)
+- [Architecture Diagrams](docs/architecture-diagrams.md)
+- [Debug Blank Page Issues](docs/debug-blank-page.md)
+- [React Hooks Issue Fix](docs/debug-hooks-issue.md) - Documentation on fixing issues with React hooks and the Start Challenge button

@@ -92,7 +92,10 @@ const AIShowcase = ({ startNewGame }: AIShowcaseProps) => {
               </div>
               <button 
                 className="start-button"
-                onClick={() => startNewGame(useCase.id)}
+                onClick={() => {
+                  console.log('🔍 AIShowcase: Start Challenge clicked for use case:', useCase.id);
+                  startNewGame(useCase.id);
+                }}
               >
                 Start Challenge
               </button>

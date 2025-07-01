@@ -63,7 +63,7 @@ http://localhost:5173/db-test.html
 
 This specialized test page will check your database connection and show detailed information about any issues.
 
-## 3. Check your environment variables
+## 6. Check your environment variables
 
 Make sure your `.env` file contains the correct connection details:
 
@@ -89,7 +89,7 @@ Key things to check:
 - Double-check your password
 - Make sure SSL is enabled (required for Azure PostgreSQL)
 
-## 4. Firewall settings
+## 7. Firewall settings
 
 Make sure your Azure PostgreSQL server's firewall allows connections from your IP address:
 
@@ -98,7 +98,7 @@ Make sure your Azure PostgreSQL server's firewall allows connections from your I
 3. Click on "Networking"
 4. Add your client IP address to the firewall rules
 
-## 5. Database schema
+## 8. Database schema
 
 Make sure the database schema has been created:
 
@@ -109,7 +109,7 @@ Make sure the database schema has been created:
    npm run test-db
    ```
 
-## 6. Try using mock data temporarily
+## 9. Try using mock data temporarily
 
 If you're still having issues, you can modify the code to always use mock data during development:
 
@@ -117,13 +117,29 @@ If you're still having issues, you can modify the code to always use mock data d
 2. Find the `loadData` function
 3. Add `setUseMockData(true);` at the beginning of the function
 
-## 7. Need more detailed logs?
+## 10. Need more detailed logs?
 
 The app has been configured with extensive debugging. Look for:
 
 1. Console logs in your browser's developer tools
 2. The Debug Panel in the bottom right corner of the app (in development mode)
 3. Terminal logs from the Vite development server
+
+## 11. Check for React Hooks Issues
+
+If certain features of the application are not working (like buttons not responding):
+
+1. Look for errors in the console related to React hooks:
+   - `Invalid hook call`
+   - `React Hook cannot be called inside a callback`
+   - `Rules of Hooks violation`
+
+2. These errors occur when React hooks are not used correctly. Common issues include:
+   - Using hooks inside regular functions instead of at the top level of components
+   - Using hooks conditionally or in loops
+   - Nesting hooks in callbacks
+
+For more information on a specific hooks-related issue that affected the "Start Challenge" button, see [React Hooks Issue Fix](debug-hooks-issue.md).
 
 ## Common issues and solutions
 

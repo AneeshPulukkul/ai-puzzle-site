@@ -25,15 +25,19 @@ function AppContent() {
     console.log('🔍 AppContent: State -', { isLoading, error, useMockData });
   }, [isLoading, error, useMockData]);
 
-  const startNewGame = (useCaseId: string) => {
+  // Access database context at the component level
+  const { getUseCaseById } = useDatabase();
+  
+  const startNewGame = async (useCaseId: string) => {
     console.log('🔍 AppContent: startNewGame called with ID:', useCaseId);
-    const { getUseCaseById } = useDatabase();
     
-    // Use an async IIFE to fetch the use case from the database
-    (async () => {
+    try {
       const useCase = await getUseCaseById(useCaseId);
       console.log('🔍 AppContent: useCase retrieved:', useCase);
-      if (!useCase) return;
+      if (!useCase) {
+        console.error('🔍 AppContent: Use case not found:', useCaseId);
+        return;
+      }
 
       setGameState({
         currentUseCase: useCase,
@@ -44,7 +48,9 @@ function AppContent() {
         isComplete: false
       });
       setActiveTab('puzzle');
-    })();
+    } catch (error) {
+      console.error('🔍 AppContent: Error starting new game:', error);
+    }
   };
 
   const resetGame = () => {
