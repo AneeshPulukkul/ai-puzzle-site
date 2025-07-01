@@ -232,3 +232,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [Architecture Diagrams](docs/architecture-diagrams.md)
 - [Debug Blank Page Issues](docs/debug-blank-page.md)
 - [React Hooks Issue Fix](docs/debug-hooks-issue.md) - Documentation on fixing issues with React hooks and the Start Challenge button
+- [Architecture Improvements](docs/architecture-improvements.md) - Analysis of current architecture and suggested improvements for scalability and performance
