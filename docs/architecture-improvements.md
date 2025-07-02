@@ -318,73 +318,127 @@ CMD ["npm", "run", "start-prod"]
   - Easy scaling
   - Integration with Azure PostgreSQL
 
-### 8. Scalability and Performance
+## Infrastructure Architecture Diagram
 
-**Current implementation**: Simple architecture without specific scaling considerations.
+The following diagram illustrates the recommended infrastructure architecture for deploying the AI Puzzle Site to Azure:
 
-**Recommended improvements**:
-
-- **Implement API Caching**:
-  - Reduce database load
-  - Improve response times
-  - Better handle traffic spikes
-
-```typescript
-// Example Redis caching
-import Redis from 'ioredis';
-const redis = new Redis(process.env.REDIS_URL);
-
-app.get('/api/tools', async (req, res) => {
-  try {
-    // Check cache first
-    const cachedTools = await redis.get('tools');
-    if (cachedTools) {
-      return res.json(JSON.parse(cachedTools));
-    }
-    
-    // Fetch from database if not cached
-    const tools = await dbService.getAllTools();
-    
-    // Store in cache for 1 hour
-    await redis.set('tools', JSON.stringify(tools), 'EX', 3600);
-    
-    res.json(tools);
-  } catch (error) {
-    // Error handling
-  }
-});
+```
+┌───────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                         Azure Cloud                                                │
+│                                                                                                   │
+│  ┌─────────────────────┐     ┌──────────────────────┐     ┌───────────────────────────────────┐   │
+│  │                     │     │                      │     │                                   │   │
+│  │   Azure Front Door  │     │  Azure App Service   │     │      Azure PostgreSQL            │   │
+│  │   or CDN           ◄─────┤  (Web App)           ◄─────┤      (Flexible Server)           │   │
+│  │                     │     │                      │     │                                   │   │
+│  └─────────┬───────────┘     └──────────┬───────────┘     └───────────────┬───────────────────┘   │
+│            │                            │                                 │                       │
+│            │                            │                                 │                       │
+│            ▼                            ▼                                 ▼                       │
+│  ┌─────────────────────┐     ┌──────────────────────┐     ┌───────────────────────────────────┐   │
+│  │                     │     │                      │     │                                   │   │
+│  │   Static Content    │     │  Express API Server  │     │      Azure Cache for Redis       │   │
+│  │   (Static Web App)  │     │  (App Service)       │     │      (Optional)                  │   │
+│  │                     │     │                      │     │                                   │   │
+│  └─────────────────────┘     └──────────────────────┘     └───────────────────────────────────┘   │
+│                                            │                              ▲                       │
+│                                            │                              │                       │
+│                                            ▼                              │                       │
+│                              ┌──────────────────────┐                     │                       │
+│                              │                      │                     │                       │
+│                              │  Application         │                     │                       │
+│                              │  Insights            ├─────────────────────┘                       │
+│                              │                      │                                             │
+│                              └──────────────────────┘                                             │
+│                                                                                                   │
+└───────────────────────────────────────────────────────────────────────────────────────────────────┘
+                                            │
+                                            │
+                                            ▼
+                               ┌───────────────────────────┐
+                               │                           │
+                               │  GitHub Actions           │
+                               │  CI/CD Pipeline           │
+                               │                           │
+                               └───────────────────────────┘
 ```
 
-- **Optimize Database Queries**:
-  - Proper indexing
-  - Query optimization
-  - Connection pooling
+### Components Description
 
-### 9. User Experience Enhancements
+1. **Azure Front Door or CDN**
+   - Provides global load balancing and content delivery
+   - Improves application performance and availability
+   - Offers SSL termination and WAF capabilities
 
-**Current implementation**: Functional UI without advanced UX patterns.
+2. **Static Content (Static Web App)**
+   - Hosts the React frontend application
+   - Serves static assets (HTML, CSS, JS, images)
+   - Enables global content delivery
 
-**Recommended improvements**:
+3. **Express API Server (App Service)**
+   - Runs the Node.js/Express backend
+   - Handles all API requests and database operations
+   - Connects to PostgreSQL database
 
-- **Add Skeleton Loading**:
-  - Improve perceived performance
-  - Reduce layout shifts
-  - Better loading states
+4. **Azure PostgreSQL (Flexible Server)**
+   - Stores application data in a managed PostgreSQL database
+   - Offers automatic backups, high availability, and scaling
+   - Secured with private endpoints or firewall rules
 
-- **Improve Drag and Drop**:
-  - More sophisticated libraries (react-dnd, dnd-kit)
-  - Smoother interactions
-  - Better accessibility
+5. **Azure Cache for Redis (Optional)**
+   - Provides caching for frequently accessed data
+   - Reduces database load and improves response times
+   - Used for session storage and API responses
 
-- **Add Animations**:
-  - Smoother transitions
-  - Visual feedback
-  - Engaging interactions
+6. **Application Insights**
+   - Monitors application performance and usage
+   - Collects logs, metrics, and telemetry
+   - Provides alerting and diagnostics
 
-- **Implement Dark Mode**:
-  - Theme support
-  - User preference respecting
-  - Improved accessibility
+7. **GitHub Actions CI/CD Pipeline**
+   - Automates testing, building, and deployment
+   - Ensures quality gates and approval workflows
+   - Deploys to different environments (dev, staging, production)
+
+### Data Flow
+
+1. User requests arrive at Azure Front Door/CDN
+2. Static content is served directly from Static Web App
+3. API requests are forwarded to the Express API Server
+4. The API server retrieves/stores data in PostgreSQL
+5. Frequently accessed data is cached in Redis
+6. All components send telemetry to Application Insights
+
+### Security Considerations
+
+1. **Network Security**
+   - Use Private Endpoints or VNet Integration for database connections
+   - Enable firewall rules to restrict access to resources
+   - Implement WAF policies on Front Door
+
+2. **Authentication and Authorization**
+   - Implement Azure AD or Auth0 for user authentication
+   - Use Managed Identities for service-to-service authentication
+   - Secure API endpoints with JWT validation
+
+3. **Data Protection**
+   - Enable encryption at rest and in transit
+   - Implement proper backup and disaster recovery
+   - Use Key Vault for storing secrets and certificates
+
+### Scaling Considerations
+
+1. **Horizontal Scaling**
+   - Configure App Service Plan for auto-scaling
+   - Use multiple instances for high availability
+   - Distribute load with Front Door
+
+2. **Vertical Scaling**
+   - Increase compute resources for App Service and PostgreSQL
+   - Monitor performance and scale up as needed
+   - Use Performance Tiers appropriate for workload
+
+This infrastructure architecture provides a scalable, secure, and maintainable foundation for the AI Puzzle Site application. It leverages Azure managed services to reduce operational overhead and focuses on performance, reliability, and security.
 
 ## Implementation Priority
 
