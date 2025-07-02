@@ -1,17 +1,17 @@
 # Non-Functional Requirements for AI Puzzle Site
 
-This document outlines the non-functional requirements for the AI Puzzle Site application, focusing on scalability, performance, availability, security, and other key aspects. These requirements are designed to support the projected growth of clients and users over a one-year period.
+This document outlines the non-functional requirements for the AI Puzzle Site application, focusing on scalability, performance, availability, security, and other key aspects. These requirements are designed to support the projected growth of users over a one-year period.
 
 ## Growth Projections
 
 The application is expected to experience rapid growth over the next four quarters:
 
-| Period | Clients | Users | Notes |
-|--------|---------|-------|-------|
-| Initial | 20 | 500 | Average of 25 users per client |
-| Quarter 2 | 40 | 5,000 | ~10x user growth from initial |
-| Quarter 3 | 80 | 25,000 | 5x user growth from Q2 |
-| Quarter 4 | 160 | 100,000 | 4x user growth from Q3 |
+| Period | Users | Notes |
+|--------|-------|-------|
+| Initial | 500 | Initial user base |
+| Quarter 2 | 5,000 | ~10x user growth from initial |
+| Quarter 3 | 25,000 | 5x user growth from Q2 |
+| Quarter 4 | 100,000 | 4x user growth from Q3 |
 
 This exponential growth trajectory requires a highly scalable and resilient architecture with proactive capacity planning and infrastructure optimization.
 
@@ -43,14 +43,14 @@ This exponential growth trajectory requires a highly scalable and resilient arch
 
 ### 2. Application Scalability
 
-* **Multi-tenancy**:
-  * Support for 160+ distinct client environments by Q4
-  * Data isolation between clients while optimizing resource sharing
-  * Tenant-aware caching and query optimization
-  * Dynamic tenant provisioning system by Q3
+* **User Management**:
+  * Support for 100,000+ unique user accounts by Q4
+  * Efficient user data storage and retrieval
+  * Personalized user experiences and settings
+  * User profile system with achievements and progression tracking
 
 * **API Gateway**:
-  * Implement rate limiting to protect against abuse (2000 requests per minute per client)
+  * Implement rate limiting to protect against abuse (2000 requests per minute per user)
   * Add request throttling with fair usage policies by Q2
   * Implement traffic shaping to prioritize critical transactions
   * Geographic routing for reduced latency by Q3
@@ -240,7 +240,7 @@ This exponential growth trajectory requires a highly scalable and resilient arch
 ### 1. Data Sovereignty
 
 * **Data Residency**:
-  * Primary data storage in client's specified region
+  * Primary data storage in user's region where possible
   * No cross-border data transfer without explicit approval
   * Data residency validation and reporting
 
@@ -363,7 +363,7 @@ Based on the projected growth from 500 to 100,000 users over one year, the follo
 * **Resource Efficiency**:
   * CPU utilization target: 60-80% during business hours
   * Scale to zero for non-production environments during off-hours
-  * Implement cost allocation tagging for client-specific resource usage
+  * Implement resource usage analytics for optimization
   * Reservation planning for predictable workloads
 
 * **Storage Optimization**:
@@ -375,7 +375,7 @@ Based on the projected growth from 500 to 100,000 users over one year, the follo
 * **Cost Monitoring**:
   * Budget alerts at 80% of monthly forecast
   * Weekly cost trend analysis
-  * Per-client cost attribution
+  * Usage pattern analytics
   * Anomaly detection for unexpected cost increases
 
 * **Cost Reduction Strategies**:
