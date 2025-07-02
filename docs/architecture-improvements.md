@@ -313,10 +313,55 @@ CMD ["npm", "run", "start-prod"]
   - Continuous deployment
   - Quality gates
 
-- **Use Azure App Service**:
-  - Managed hosting
-  - Easy scaling
-  - Integration with Azure PostgreSQL
+- **Use Azure Container Apps**:
+  - Fully managed Kubernetes-like environment
+  - Native support for containerized applications
+  - Advanced auto-scaling capabilities
+  - Built-in support for microservices
+
+```yaml
+# Example GitHub Actions workflow for Container Apps
+name: Build and deploy to Azure Container Apps
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+      
+    - name: Login to ACR
+      uses: docker/login-action@v1
+      with:
+        registry: ${{ secrets.REGISTRY_URL }}
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+        
+    - name: Build and push
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: ${{ secrets.REGISTRY_URL }}/ai-puzzle-site:${{ github.sha }}
+        
+    - name: Deploy to Azure Container Apps
+      uses: azure/container-apps-deploy-action@v1
+      with:
+        appSourcePath: ${{ github.workspace }}
+        acrName: ${{ secrets.REGISTRY_NAME }}
+        acrUsername: ${{ secrets.REGISTRY_USERNAME }}
+        acrPassword: ${{ secrets.REGISTRY_PASSWORD }}
+        containerAppName: ai-puzzle-api
+        resourceGroup: ${{ secrets.RESOURCE_GROUP }}
+        imageToDeploy: ${{ secrets.REGISTRY_URL }}/ai-puzzle-site:${{ github.sha }}
+```
 
 ## Infrastructure Architecture Diagram
 
@@ -328,8 +373,8 @@ The following diagram illustrates the recommended infrastructure architecture fo
 │                                                                                                   │
 │  ┌─────────────────────┐     ┌──────────────────────┐     ┌───────────────────────────────────┐   │
 │  │                     │     │                      │     │                                   │   │
-│  │   Azure Front Door  │     │  Azure App Service   │     │      Azure PostgreSQL            │   │
-│  │   or CDN           ◄─────┤  (Web App)           ◄─────┤      (Flexible Server)           │   │
+│  │   Azure Front Door  │     │  Azure Container     │     │      Azure PostgreSQL            │   │
+│  │   or CDN           ◄─────┤  Apps Environment    ◄─────┤      (Flexible Server)           │   │
 │  │                     │     │                      │     │                                   │   │
 │  └─────────┬───────────┘     └──────────┬───────────┘     └───────────────┬───────────────────┘   │
 │            │                            │                                 │                       │
@@ -338,7 +383,7 @@ The following diagram illustrates the recommended infrastructure architecture fo
 │  ┌─────────────────────┐     ┌──────────────────────┐     ┌───────────────────────────────────┐   │
 │  │                     │     │                      │     │                                   │   │
 │  │   Static Content    │     │  Express API Server  │     │      Azure Cache for Redis       │   │
-│  │   (Static Web App)  │     │  (App Service)       │     │      (Optional)                  │   │
+│  │   (Static Web App)  │     │  (Container App)     │     │      (Optional)                  │   │
 │  │                     │     │                      │     │                                   │   │
 │  └─────────────────────┘     └──────────────────────┘     └───────────────────────────────────┘   │
 │                                            │                              ▲                       │
@@ -361,6 +406,15 @@ The following diagram illustrates the recommended infrastructure architecture fo
                                │  CI/CD Pipeline           │
                                │                           │
                                └───────────────────────────┘
+                                            │
+                                            │
+                                            ▼
+                               ┌───────────────────────────┐
+                               │                           │
+                               │  Azure Container          │
+                               │  Registry                 │
+                               │                           │
+                               └───────────────────────────┘
 ```
 
 ### Components Description
@@ -375,39 +429,51 @@ The following diagram illustrates the recommended infrastructure architecture fo
    - Serves static assets (HTML, CSS, JS, images)
    - Enables global content delivery
 
-3. **Express API Server (App Service)**
-   - Runs the Node.js/Express backend
+3. **Express API Server (Container App)**
+   - Runs the Node.js/Express backend in a containerized environment
    - Handles all API requests and database operations
-   - Connects to PostgreSQL database
+   - Benefits from Container Apps' auto-scaling and microservices capabilities
 
-4. **Azure PostgreSQL (Flexible Server)**
+4. **Azure Container Apps Environment**
+   - Manages containerized applications with Kubernetes-like features
+   - Provides advanced auto-scaling based on HTTP traffic or events
+   - Simplifies microservices architecture without Kubernetes complexity
+
+5. **Azure PostgreSQL (Flexible Server)**
    - Stores application data in a managed PostgreSQL database
    - Offers automatic backups, high availability, and scaling
    - Secured with private endpoints or firewall rules
 
-5. **Azure Cache for Redis (Optional)**
+6. **Azure Cache for Redis (Optional)**
    - Provides caching for frequently accessed data
    - Reduces database load and improves response times
    - Used for session storage and API responses
 
-6. **Application Insights**
+7. **Application Insights**
    - Monitors application performance and usage
    - Collects logs, metrics, and telemetry
    - Provides alerting and diagnostics
 
-7. **GitHub Actions CI/CD Pipeline**
+8. **GitHub Actions CI/CD Pipeline**
    - Automates testing, building, and deployment
    - Ensures quality gates and approval workflows
-   - Deploys to different environments (dev, staging, production)
+   - Builds and pushes Docker images to Azure Container Registry
+
+9. **Azure Container Registry**
+   - Stores and manages Docker container images
+   - Integrates with Container Apps for deployments
+   - Provides vulnerability scanning for images
 
 ### Data Flow
 
 1. User requests arrive at Azure Front Door/CDN
 2. Static content is served directly from Static Web App
-3. API requests are forwarded to the Express API Server
+3. API requests are forwarded to the Express API Server running in Container Apps
 4. The API server retrieves/stores data in PostgreSQL
 5. Frequently accessed data is cached in Redis
 6. All components send telemetry to Application Insights
+7. CI/CD pipeline builds and pushes container images to Azure Container Registry
+8. Container Apps pulls images from Azure Container Registry for deployments
 
 ### Security Considerations
 
@@ -429,14 +495,19 @@ The following diagram illustrates the recommended infrastructure architecture fo
 ### Scaling Considerations
 
 1. **Horizontal Scaling**
-   - Configure App Service Plan for auto-scaling
-   - Use multiple instances for high availability
+   - Container Apps automatically scales based on HTTP traffic or KEDA-supported event sources
+   - Define min/max replicas for cost control and high-availability
    - Distribute load with Front Door
 
 2. **Vertical Scaling**
-   - Increase compute resources for App Service and PostgreSQL
-   - Monitor performance and scale up as needed
+   - Configure Container Apps CPU and memory allocation based on workload requirements
+   - Increase compute resources for PostgreSQL Flexible Server
    - Use Performance Tiers appropriate for workload
+
+3. **Microservices Architecture**
+   - Leverage Container Apps to split the backend into microservices if needed
+   - Use built-in service discovery for inter-service communication
+   - Implement dapr for resilient microservices patterns
 
 This infrastructure architecture provides a scalable, secure, and maintainable foundation for the AI Puzzle Site application. It leverages Azure managed services to reduce operational overhead and focuses on performance, reliability, and security.
 
